@@ -12,8 +12,7 @@
  <div class="card-body">
  @if ($errors->any())
  <div class="alert alert-danger">
- <strong>Whoops!</strong> There were some problems with your i
-nput.<br><br>
+ <strong>Whoops!</strong> There were some problems with your input.<br><br>
  <ul>
  @foreach ($errors->all() as $error)
  <li>{{ $error }}</li>
@@ -33,7 +32,12 @@ rm">
  <input type="Nama" name="Nama" class="form-control" id="Nama" aria-describedby="Nama" > 
  </div>
  <div class="form-group">
- <label for="Kelas">Kelas</label>  <input type="Kelas" name="Kelas" class="form-control" id="Kelas" aria-describedby="password" > 
+ <label for="Kelas">Kelas</label>  <select name="Kelas" id="Kelas" class="form-select">
+    <option selected disabled>Pilih Kelas</option>
+@foreach($kelas as $Kelas)
+    <option value="{{ $Kelas->id }}">{{ $Kelas->nama_kelas }}</option>
+@endforeach
+</select> 
  </div>
  <div class="form-group">
  <label for="Jurusan">Jurusan</label> 
