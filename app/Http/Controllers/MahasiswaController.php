@@ -22,14 +22,14 @@ class MahasiswaController extends Controller
         // with('i', (request()->input('page', 1) - 1) * 5);
         // $mahasiswas1 = DB::table('mahasiswas')->simplePaginate(5);	
         if($request->has('search')){
-            $mahasiswas = Mahasiswa::where('Nama', 'like', "%".$request->search."%")->paginate(5);
+            $mahasiswas = Mahasiswa::where('Nama', 'like', "%".$request->search."%")
+                ->orWhere('Nim', $request->search)
+                ->paginate(5);
         } else {
-            $mahasiswas = Mahasiswa::with('kelas')->paginate(3);
+                    // fungsi eloquent menampilkan data menggunakan pagination
+                    $mahasiswas = Mahasiswa::paginate(5);
         }
-
-
-        $paginate = Mahasiswa::orderBy('Nim', 'asc')->paginate(3);
-        return view('mahasiswas.index', ['mahasiswas' => $mahasiswas, 'paginate' => $paginate]);
+        return view('mahasiswas.index', compact('mahasiswas'));
     }
 
     /**
@@ -62,8 +62,17 @@ class MahasiswaController extends Controller
             'Tanggal_lahir' => 'required',
             
             ]);
-            //fungsi eloquent untuk menambah data
-            Mahasiswa::create($request->all());
+            // //fungsi eloquent untuk menambah data
+            // Mahasiswa::create($request->all());
+        $mahasiswa = new Mahasiswa;
+        $mahasiswa->nim = $request->get('Nim');
+        $mahasiswa->nama = $request->get('Nama');
+        $mahasiswa->kelas_id = $request->get('Kelas');
+        $mahasiswa->jurusan = $request->get('Jurusan');
+        $mahasiswa->no_handphone = $request->get('No_Handphone');
+        $mahasiswa->email = $request->get('email');
+        $mahasiswa->tanggal_lahir = $request->get('tanggal_lahir');
+        $mahasiswa->save();
 
             //jika data berhasil ditambahkan, akan kembali ke halaman utama
             return redirect()->route('mahasiswas.index')
