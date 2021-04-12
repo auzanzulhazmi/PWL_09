@@ -20,21 +20,15 @@ class MahasiswaController extends Controller
         // return view('mahasiswas.index', compact('mahasiswas'));
         // with('i', (request()->input('page', 1) - 1) * 5);
         // $mahasiswas1 = DB::table('mahasiswas')->simplePaginate(5);	
-        $mahasiswas = Mahasiswa::where([
-            ['Nama','!=',Null],
-            [function($query)use($request){
-                if (($term = $request->term)) {
-                    $query->orWhere('Nama','LIKE','%'.$term.'%')->get();
-                }
-            }]
-        ])
-        ->orderBy('Nim','desc')
-        // ->paginate(5);
-        ->simplePaginate(5);
+        if($request->has('search')){
+            $mahasiswas = Mahasiswa::where('Nama', 'like', "%".$request->search."%")->paginate(5);
+        } else {
+            $mahasiswas = Mahasiswa::with('kelas')->paginate(3);
+        }
 
 
-        return view('mahasiswas.index' , compact('mahasiswas'))
-        ->with('i',(request()->input('page',1)-1)*5);
+        $paginate = Mahasiswa::orderBy('Nim', 'asc')->paginate(3);
+        return view('mahasiswas.index', ['mahasiswas' => $mahasiswas, 'paginate' => $paginate]);
     }
 
     /**
